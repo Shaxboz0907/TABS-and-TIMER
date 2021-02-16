@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //TIMER
 
-    const deadline = "2020-12-31";
+    const deadline = "2021-12-31";
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -226,4 +226,56 @@ window.addEventListener('DOMContentLoaded', () => {
         '.menu .container' // this.parent ga berildi! yani menu ichidagi container
         
     ).render();
+
+    // FORM
+
+    const forms = document.querySelectorAll('form');
+    const message = {
+        loading: 'Загрузка...',
+        success: 'Спасибо! Скоро мы с вами свяжемся',
+        failure: 'Что-то пошло не так...'
+    };
+
+    forms.forEach(item =>   {           // kiritilgan malumotni pastdagi funksiyaga yuborish
+        postData(item);
+    });
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let statusMessage = document.createElement('div');   // yuborilgan malumot bor guncha sms chiqishi
+            statusMessage.classList.add('status');
+            statusMessage.textContent = message.loading;
+            form.appendChild(statusMessage);
+
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+
+            request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            const formData = new FormData(form);  // form ichidagi (inputlardagi malumotlarni yigish)
+
+            const object = {};
+            formData.forEach(function(value, key) {
+                object[key] = value;
+            });
+
+            const json = JSON.stringify(object);  // oddiy obyektni json farmatga utkazish
+            
+            request.send(json);
+
+            request.addEventListener('load', () => {
+                if(request.status === 200){
+                    console.log(request.response);
+                    statusMessage.textContent = message.success;
+                    form.reset();    // form kataklarini tozalab
+                    setTimeout(() => {
+                        statusMessage.remove();
+                    }, 2000);
+                } else {
+                    statusMessage.textContent = message.failure;
+                }
+            });
+        });
+    }
 });
