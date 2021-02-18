@@ -103,7 +103,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
         modal = document.querySelector('.modal');
-       
+
 
 
     function openModal() {
@@ -123,10 +123,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
     }
 
-    
+
 
     modal.addEventListener('click', (e) => {
-        if (e.target === modal || e.target.getAttribute('data-close') =='' ) {
+        if (e.target === modal || e.target.getAttribute('data-close') == '') {
             closeModal();
         }
     });
@@ -137,7 +137,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const modalTimerId = setTimeout(openModal, 50000); 
+    const modalTimerId = setTimeout(openModal, 50000);
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
@@ -159,7 +159,7 @@ window.addEventListener('DOMContentLoaded', () => {
             this.title = title;
             this.descr = descr;
             this.price = price;
-            this.classes = classes;       // rest operator = massiv
+            this.classes = classes; // rest operator = massiv
             this.parent = document.querySelector(parentSelector); // render metodini joylash uchun ota elm chaqirdik
             this.transfer = 27; // kurs qaysidir valyutaga nisbatan kiritiladi
             this.changeToUAH();
@@ -171,15 +171,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
         render() { // htmlga joylashtiradigan metod
             const element = document.createElement('div');
-           
-            if(this.classes.length ===0){                // massivni bor yo'qligini tekshirish
-                this.element = 'menu__item';             // bo'lmasa default qo'yilsin
+
+            if (this.classes.length === 0) { // massivni bor yo'qligini tekshirish
+                this.element = 'menu__item'; // bo'lmasa default qo'yilsin
                 element.classList.add(this.element);
-            } 
-            else {
-                this.classes.forEach(className => element.classList.add(className));  // bo'lsa forEach bn joylashtirish
+            } else {
+                this.classes.forEach(className => element.classList.add(className)); // bo'lsa forEach bn joylashtirish
             }
-            
+
             element.innerHTML = `
                 <img src=${this.src} alt=${this.alt}>
                 <h3 class="menu__item-subtitle">${this.title}</h3>
@@ -204,7 +203,7 @@ window.addEventListener('DOMContentLoaded', () => {
         'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
         9,
         '.menu .container' // this.parent ga berildi! yani menu ichidagi container
-    
+
     ).render();
 
     new MenuCard( // 2- card
@@ -214,7 +213,7 @@ window.addEventListener('DOMContentLoaded', () => {
         'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан! вегетарианских стейков',
         14,
         '.menu .container' // this.parent ga berildi! yani menu ichidagi container
-        
+
     ).render();
 
     new MenuCard( // 3- card
@@ -224,7 +223,7 @@ window.addEventListener('DOMContentLoaded', () => {
         'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
         21,
         '.menu .container' // this.parent ga berildi! yani menu ichidagi container
-        
+
     ).render();
 
     // FORM
@@ -236,7 +235,7 @@ window.addEventListener('DOMContentLoaded', () => {
         failure: 'Что-то пошло не так...'
     };
 
-    forms.forEach(item =>   {           // kiritilgan malumotni pastdagi funksiyaga yuborish
+    forms.forEach(item => { // kiritilgan malumotni pastdagi funksiyaga yuborish
         postData(item);
     });
 
@@ -244,7 +243,7 @@ window.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            let statusMessage = document.createElement('img');   // spinner img yaratish
+            let statusMessage = document.createElement('img'); // spinner img yaratish
             statusMessage.src = message.loading; // source ni shunday quysaxam buladi
             statusMessage.style.cssText = `
                 display: block ;
@@ -252,39 +251,40 @@ window.addEventListener('DOMContentLoaded', () => {
             `;
             //form.appendChild(statusMessage);
             form.insertAdjacentElement('afterend', statusMessage); // form dan kiyin chiqadi spinner(tepadagi modal un)
-
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-
-            request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-            const formData = new FormData(form);  // form ichidagi (inputlardagi malumotlarni yigish)
+                   
+            const formData = new FormData(form); // form ichidagi (inputlardagi malumotlarni yigish)
 
             const object = {};
-            formData.forEach(function(value, key) {
+            formData.forEach(function (value, key) {
                 object[key] = value;
             });
-
-            const json = JSON.stringify(object);  // oddiy obyektni json farmatga utkazish
             
-            request.send(json);
-
-            request.addEventListener('load', () => {
-                if(request.status === 200){
-                    console.log(request.response);
-                    showThanksModal(message.success);
-                    form.reset();    // form kataklarini tozalab
-                    statusMessage.remove();
-                } else {
-                    showThanksModal(message.failure);
-                }
+            fetch('server1.php' , {      
+                method: 'POST',
+                headers: {
+                    'Content-type' : 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify(object) // oddiy obyektni json farmatga utkazish 
+                                            // body = 'formData'ga teng
+            })
+            .then(data => data.text()) // server qaytargan malumotni text kurinishida olish
+            .then(data => {
+                console.log(data);
+                showThanksModal(message.success);
+                statusMessage.remove();
+            }).catch(() =>{                 // catch xatolikni ushlaydi
+                showThanksModal(message.failure);
+            }).finally(() => {              // oxirgi bajariladigan ishlar yoziladi
+                form.reset();               // form kataklarini tozalab
             });
+
         });
     }
 
     function showThanksModal(message) {
         const prevModalDailog = document.querySelector('.modal__dialog');
 
-        prevModalDailog.classList.add('hide'); 
+        prevModalDailog.classList.add('hide');
         openModal();
 
         const thanksModal = document.createElement('div');
@@ -296,12 +296,12 @@ window.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         document.querySelector('.modal').append(thanksModal);
-        setTimeout(()=>{
+        setTimeout(() => {
             thanksModal.remove();
             prevModalDailog.classList.add('show');
             prevModalDailog.classList.remove('hide');
             closeModal();
-        }, 4000 );
+        }, 4000);
     }
 
 });
