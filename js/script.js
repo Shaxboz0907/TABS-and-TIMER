@@ -325,48 +325,77 @@ window.addEventListener('DOMContentLoaded', () => {
           prev = document.querySelector('.offer__slider-prev'),
           next = document.querySelector('.offer__slider-next'),
           total = document.querySelector('#total'),
-          current = document.querySelector('#current');
+          current = document.querySelector('#current'),
+          slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+          slidesField = document.querySelector('.offer__slider-inner'),
+          width = window.getComputedStyle(slidesWrapper).width; // ekrandagi enini olish
+
     let slideIndex = 1 ;
+    let offset = 0 ;
 
-    showSlides(slideIndex);
-
-    if(slides.length < 10){
-        total.textContent = `0${slides.length}`;
+    if (slides.length < 10) {
+        total.textContent = `0${slides.length}`; // nol quyib yozish slide nomeriga
+        current.textContent =  `0${slideIndex}`;
     } else {
-        total.textContent = slides.length ;
+        total.textContent = slides.length;
+        current.textContent =  slideIndex;  // 10 tadan kup busa nol keremas
     }
 
-    function showSlides (n) {
-        if(n > slides.length) {    
-            slideIndex = 1;
-        }
+    slidesField.style.width = 100 * slides.length + '%' ; // 400% buldi 4 ta slide tuliq bulib turish u-n
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '0.5s all';
 
-        if(n < 1) {
-            slideIndex = slides.length;
-        }
+    slidesWrapper.style.overflow = 'hidden' ; // boshqa slide larni yopib turamiz
 
-        slides.forEach(item => item.style.display = 'none');
-        slides[slideIndex - 1].style.display = 'block'; // 1-element kurinib turishi u-n
+    slides.forEach(slide => {  // hamma slide ulchamini bir xil qilish
+        slide.style.width = width ;
+    });
 
-        if(slides.length < 10){       // slide nomerini ham uzgartirish
-            current.textContent = `0${slideIndex}`;
+    next.addEventListener('click' , () => {
+
+        if(offset == +width.slice(0, width.length - 2) * (slides.length -1)){
+            offset = 0;
         } else {
-            current.textContent = slideIndex;
+            offset += +width.slice(0, width.length - 2); 
         }
-    }
 
-    function plusSlides(n) {              // index oshib borishi
-        showSlides(slideIndex += n); 
-    }
-    
-    prev.addEventListener('click', () => {  // orqaga qaytarish
-        plusSlides(-1);  
+        slidesField.style.transform = `translateX(-${offset}px)`; // x uqi buyicha o'nga yurish
+
+        if (slideIndex == slides.length) {
+            slideIndex = 1;
+        } else {
+            slideIndex++;
+        }
+
+        if (slides.length < 10) {
+            current.textContent =  `0${slideIndex}`;
+        } else {
+            current.textContent =  slideIndex;
+        }
     });
 
-    next.addEventListener('click' , () => {  // oldinga yurgizish
-        plusSlides(1);  
-    });
-    
+    prev.addEventListener('click' , () => {
+
+        if(offset == 0){            
+            offset = +width.slice(0, width.length - 2) * (slides.length -1);
+        } else {
+            offset -= +width.slice(0, width.length - 2);
+        }
+
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (slideIndex == 1) {
+            slideIndex = slides.length;
+        } else {
+            slideIndex--;
+        }
+
+        if (slides.length < 10) {
+            current.textContent =  `0${slideIndex}`;
+        } else {
+            current.textContent =  slideIndex;
+        }
+    });  
 
 
 });
