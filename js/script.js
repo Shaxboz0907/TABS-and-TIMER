@@ -193,7 +193,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const getResource = async (url) =>{  // asixron ishlaydigan func bor dedi (async)
+    const getResource = async (url) => {  // asixron ishlaydigan func bor dedi (async)
         const res = await fetch(url); 
 
         if(!res.ok){
@@ -202,12 +202,22 @@ window.addEventListener('DOMContentLoaded', () => {
         return await res.json();
     };
 
+    // axios.get('http://localhost:3000/menu') // AXIOS kutibxonasini ishlatish
+    //     .then(data => {
+    //         data.data.forEach(({img, altimg, title , descr, price}) => {
+    //             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    //         });
+    //     });
+
+
     getResource('http://localhost:3000/menu') // db.jsondan mulumotlarni olamiz
         .then( data => {
             data.forEach(({img, altimg, title , descr, price}) => {
                 new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
             });
         });   
+
+
 
     // getResource('http://localhost:3000/menu') // db.jsondan mulumotlarni olamiz 2-usul verstka u-n 
     //     .then(data => createCard(data));    
@@ -309,5 +319,54 @@ window.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 
-   
+    // Slider
+
+    const slides = document.querySelectorAll('.offer__slide'),
+          prev = document.querySelector('.offer__slider-prev'),
+          next = document.querySelector('.offer__slider-next'),
+          total = document.querySelector('#total'),
+          current = document.querySelector('#current');
+    let slideIndex = 1 ;
+
+    showSlides(slideIndex);
+
+    if(slides.length < 10){
+        total.textContent = `0${slides.length}`;
+    } else {
+        total.textContent = slides.length ;
+    }
+
+    function showSlides (n) {
+        if(n > slides.length) {    
+            slideIndex = 1;
+        }
+
+        if(n < 1) {
+            slideIndex = slides.length;
+        }
+
+        slides.forEach(item => item.style.display = 'none');
+        slides[slideIndex - 1].style.display = 'block'; // 1-element kurinib turishi u-n
+
+        if(slides.length < 10){       // slide nomerini ham uzgartirish
+            current.textContent = `0${slideIndex}`;
+        } else {
+            current.textContent = slideIndex;
+        }
+    }
+
+    function plusSlides(n) {              // index oshib borishi
+        showSlides(slideIndex += n); 
+    }
+    
+    prev.addEventListener('click', () => {  // orqaga qaytarish
+        plusSlides(-1);  
+    });
+
+    next.addEventListener('click' , () => {  // oldinga yurgizish
+        plusSlides(1);  
+    });
+    
+
+
 });
