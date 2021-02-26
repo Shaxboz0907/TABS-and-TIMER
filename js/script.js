@@ -331,14 +331,14 @@ window.addEventListener('DOMContentLoaded', () => {
           width = window.getComputedStyle(slidesWrapper).width; // ekrandagi enini olish
 
     let slideIndex = 1 ;
-    let offset = 0 ;
+    let offset = 0 ;  // o'ng yoki chapga nechchi px yurganimizni bilish uchun offset
 
-    if (slides.length < 10) {
-        total.textContent = `0${slides.length}`; // nol quyib yozish slide nomeriga
+    if (slides.length < 10) { 
+        total.textContent = `0${slides.length}`; // nechta slide borligini kursatib turuvchi joyiga yozish! 10tadan kam busa 0 qushadi 
         current.textContent =  `0${slideIndex}`;
     } else {
-        total.textContent = slides.length;
-        current.textContent =  slideIndex;  // 10 tadan kup busa nol keremas
+        total.textContent = slides.length;  // 10 tadan kup busa nol keremas!
+        current.textContent =  slideIndex;  
     }
 
     slidesField.style.width = 100 * slides.length + '%' ; // 400% buldi 4 ta slide tuliq bulib turish u-n
@@ -352,22 +352,22 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     next.addEventListener('click' , () => {
-
-        if(offset == +width.slice(0, width.length - 2) * (slides.length -1)){
-            offset = 0;
-        } else {
+                                                                            // 4-1 =3 yani oxirgi element bolganda next bosilsa birga utadi 
+        if(offset == +width.slice(0, width.length - 2) * (slides.length -1)){ // width=500px! shu yerda px olib tashlash u-n slice ishlatildi
+            offset = 0;                                                       // slice 500px di 0-chi elementidan to oxirgi 2 ta elementgacha qirqdi
+        } else {                                                               // shunda bizda 500 qoldi ! endi mateematik amal tugri ketadi
             offset += +width.slice(0, width.length - 2); 
         }
 
         slidesField.style.transform = `translateX(-${offset}px)`; // x uqi buyicha o'nga yurish
 
-        if (slideIndex == slides.length) {
+        if (slideIndex == slides.length) { // slide oxiriga kelgan busa birinchi slidega qaytsin
             slideIndex = 1;
         } else {
-            slideIndex++;
+            slideIndex++;  // slide oxiriga kelmagan bulsa bittaga kupayib ketvursin
         }
 
-        if (slides.length < 10) {
+        if (slides.length < 10) {   // next bosilganda nomer xam nextga qushilib o'zgarishi currentniki! total uzgarmaydi
             current.textContent =  `0${slideIndex}`;
         } else {
             current.textContent =  slideIndex;
@@ -376,18 +376,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
     prev.addEventListener('click' , () => {
 
-        if(offset == 0){            
-            offset = +width.slice(0, width.length - 2) * (slides.length -1);
+        if(offset == 0){                                             // offset = 0 1-chi slide
+            offset = +width.slice(0, width.length - 2) * (slides.length -1); // bu kod oxirgi slide
         } else {
             offset -= +width.slice(0, width.length - 2);
         }
 
         slidesField.style.transform = `translateX(-${offset}px)`;
 
-        if (slideIndex == 1) {
+        if (slideIndex == 1) {   // orqani bosganda 1-chi elementda bolsa oxirgi elementga utishi k-k
             slideIndex = slides.length;
         } else {
-            slideIndex--;
+            slideIndex--;      // agar birinchi elementda bo'lmasa orqaga kamayib ketuvrish kerak
         }
 
         if (slides.length < 10) {
