@@ -1,3 +1,5 @@
+import {getResource} from '../services/services' ;
+
 function cards() {
     // Используем классы для создание карточек меню
 
@@ -42,14 +44,7 @@ function cards() {
         }
     }
 
-    const getResource = async (url) => { // asixron ishlaydigan func bor dedi (async)
-        const res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-        }
-        return await res.json();
-    };
+   
 
     // axios.get('http://localhost:3000/menu') // AXIOS kutibxonasini ishlatish
     //     .then(data => {
@@ -96,4 +91,4 @@ function cards() {
 
 }
 
-module.exports = cards;
+export default cards;
